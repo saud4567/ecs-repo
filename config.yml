@@ -1,0 +1,15 @@
+version: 2.1
+
+  jobs:
+  build:
+  docker:
+   - image: cimg/node:18.12.0
+   steps:
+   - checkout:
+   - run: node main.js
+   
+   workflows:
+   build_now:
+   jobs:
+   - build 
+   
