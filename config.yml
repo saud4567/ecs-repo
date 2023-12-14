@@ -8,19 +8,6 @@ jobs:
       - checkout
       - run: echo "deploying to production server"
 
-workflows:
-  version: 2
-  build_and_test_deploy:
-    jobs:
-      - build:
-      - test:
-        requires:
-          - build
-          - deploy
-        filters:
-          branches:
-            only: main
-          
   deploy:
     docker:
       - image: cimg/node:18.12.0
@@ -33,5 +20,27 @@ workflows:
       - image: cimg/node:18.12.0
     steps:
       - checkout
-      - run: echo 'replace me with real tests!' && false
+      - run: |
+          # Run your actual tests here
+          npm install --production
+          npm test
+
+workflows:
+  version: 2
+  build_and_test_deploy:
+    jobs:
+      - build
+      - deploy:
+          requires:
+            - build
+          filters:
+            branches:
+              only: main
+      - test:
+          requires:
+            - build
+            - deploy
+          filters:
+            branches:
+              only: main
 
