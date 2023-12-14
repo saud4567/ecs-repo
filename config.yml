@@ -1,23 +1,37 @@
 version: 2.1
 
-  jobs:
+jobs:
   build:
-  docker:
-   - image: cimg/node:18.12.0
-   steps:
-   - checkout:
-   - run: echo "deploying to production derver"
-   
-   workflows:
-   build_and_test_deply:
+    docker:
+      - image: cimg/node:18.12.0
+    steps:
+      - checkout
+      - run: echo "deploying to production server"
+
+workflows:
+  version: 2
+  build_and_test_deploy:
     jobs:
-    - build:
-    - test: 
-   reqiures:
-    - build:
-    - deploy:
-   requires:
-    -test:
-     filters:
-      branches:
-       only:main
+      - build:
+      - test:
+        requires:
+          - build
+          - deploy
+        filters:
+          branches:
+            only: main
+          
+  deploy:
+    docker:
+      - image: cimg/node:18.12.0
+    steps:
+      - checkout
+      - run: echo "deploying to production server"
+
+  test:
+    docker:
+      - image: cimg/node:18.12.0
+    steps:
+      - checkout
+      - run: echo 'replace me with real tests!' && false
+
